@@ -169,3 +169,22 @@ Don't use LLM functions to "validate" any other output. {#You should use @assert
 Dedent all declarations.
 
 Note that the types exported by BAML are pydantic classes in python, and interfaces in Tyepscript, except for primitive types.
+
+<Testing>
+Example test in BAML file. Note the usage of assertions and templating language in the assertions.
+
+```baml
+test positive_review {
+ functions [AnalyzeReview]
+ args {
+ review #"
+ Took my road bike in for a tune-up and was very impressed. The staff was friendly and knowledgeable, and they completed the work faster than expected. My bike feels like new again! They even pointed out a few potential issues I should keep an eye on. Highly recommend this shop for any cyclist.
+ "#
+ }
+ @@assert(must_have_reviews, {{ this.tags | length > 0 }})
+ @@assert(must_have_friendly_or_fast_service, {{ this.tags[0].tag == "FAST_SERVICE" or this.tags[0].tag == "FRIENDLY_STAFF" }})
+ @@assert(must_be_positive, {{ this.sentiment == "POSITIVE" }})
+}
+```
+
+</Testing>
