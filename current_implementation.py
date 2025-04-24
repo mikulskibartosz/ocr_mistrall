@@ -180,7 +180,7 @@ prompt = prompt_template.replace("{{input_text}}", data)
 mistral = Mistral(api_key=config.mistral_api_key)
 
 response = mistral.chat.complete(
-    model=config.mistral_model,
+    model="open-mistral-7b",
     messages=[{"role": "user", "content": prompt}],
 )
 

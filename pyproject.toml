@@ -11,9 +11,11 @@ python = "^3.13"
 mistralai = "1.7.0"
 baml-py = "0.85.0"
 pydantic = "2.11.3"
+fastapi = {extras = ["standard"], version = "0.115.12"}
 
-[tool.poetry.dev-dependencies]
+[poetry.group.dev.dependencies]
 black = "25.1.0"
+requests = "2.31.0"
 
 [build-system]
 requires = ["poetry-core"]

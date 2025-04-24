@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 class Config(BaseModel):
     mistral_api_key: str
-    mistral_model: str
 
 
 def load_config() -> Config:
@@ -19,7 +18,5 @@ def load_config() -> Config:
     mistral_api_key = os.environ.get("MISTRAL_API_KEY") or env_vars.get(
         "MISTRAL_API_KEY", ""
     )
-    mistral_model = os.environ.get("MISTRAL_MODEL") or env_vars.get(
-        "MISTRAL_MODEL", "open-mistral-7b"
-    )
-    return Config(mistral_api_key=mistral_api_key, mistral_model=mistral_model)
+
+    return Config(mistral_api_key=mistral_api_key)

@@ -1,27 +1,3 @@
-1. Do not include any comments in the code.
-2. If there are already existing comments, keep them.
-
----
-
-Proper way to use Mistral SDK:
-
-```python
-with Mistral(
-    api_key=config.mistral_api_key,
-) as mistral:
-
-    res = mistral.chat.complete(model=config.mistral_model, messages=[
-        {
-            "content": "Who is the best French painter? Answer in one short sentence.",
-            "role": "user",
-        },
-    ])
-
-    print(res)
-```
-
----
-
 <Overview>
   BAML (Basically, A Made-Up Language) is a domain-specific language for building LLM prompts as functions.
   You can build an agentic workflow with BAML.

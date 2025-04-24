@@ -1,3 +1,4 @@
+from typing import List
 from mistralai import Mistral
 
 
@@ -6,7 +7,7 @@ class MistralOCR:
         self.api_key = api_key
         self.delete_after_ocr = delete_after_ocr
 
-    def ocr(self, filename):
+    def ocr(self, filename) -> List[str]:
         file_id, pdf_url = self._upload_pdf(filename)
         ocr_response = self._run_ocr(pdf_url)
         if self.delete_after_ocr:

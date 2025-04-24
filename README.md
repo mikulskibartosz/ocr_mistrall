@@ -1,52 +1,60 @@
-{
-  "subject": "Malowanie szopy na narzędzia",
-  "date": "2025-04-20",
-  "parties": [
-    {
-      "name": "Komar SP. Z O.O.",
-      "role": "Zleceniodawca"
-    },
-    {
-      "name": "Pan Tomasz Karp",
-      "role": "Zleceniobiorca"
-    }
-  ],
-  "scope_of_work": {
-    "services": {
-      "testing_services": {
-        "work_stream": ["Malowanie szopy na narzędzia"],
-        "roles": [{"role": "Zleceniobiorca"}],
-        "total_resources": "missing"
-      }
-    },
-    "project_plan_and_milestones": {
-      "start_date": "2025-04-20",
-      "end_date": "2025-04-22"
-    },
-    "place_of_performance": "missing",
-    "pricing_model": {
-      "cost_structure": [
-        {
-          "work_stream": "missing",
-          "duration": "missing",
-          "resources": "missing",
-          "rate": "700"
-        }
-      ],
-      "payment_terms": {
-        "due_date": "missing"
-      }
-    },
-    "acceptance_criteria": {
-      "deliverables": ["Malowanie szopy na narzędzia"]
-    },
-    "duration_and_termination": {
-      "start_date": "2025-04-20",
-      "end_condition": "missing"
-    },
-    "miscellaneous_provisions": "missing"
-  },
-  "net_value": "700",
-  "currency": "PLN",
-  "contract_name": "UMOWA ZLECENIE"
+# OCR Contracts
+
+## Zmiana API Mistral na Ollama
+
+W pliku `baml_src/clients.baml` zmieniamy:
+
+```
+client<llm> Mistral {
+  provider "openai-generic"
+  options {
+    base_url "https://api.mistral.ai/v1"
+    model "open-mistral-7b"
+    api_key env.MISTRAL_API_KEY
+  }
 }
+```
+
+na:
+
+```
+client<llm> MyClient {
+  provider "openai-generic"
+  options {
+    base_url "http://localhost:11434/v1"
+    model mistral-7b
+  }
+}
+```
+
+## Instalacja
+
+```bash
+poetry install
+```
+
+Tworzymy plik `.env` kopiując zawartość pliku `.env.example` i wklejając klucz API z Mistrala (nawet jeśli używamy Ollamy będzie potrzebny do OCR).
+
+## Uruchomienie (lokalnie)
+
+```bash
+poetry run fastapi dev api.py
+```
+
+## Testowanie lokalnie
+
+```bash
+poetry run python send_file.py /path/to/your/file.pdf
+```
+
+## Budowanie obrazu Dockera
+
+```bash
+docker build -t ocr-contracts .
+```
+
+## Uruchamianie Dockera
+
+```bash
+docker run -d -e MISTRAL_API_KEY=<klucz-api-mistrala> -p 8080:8080 ocr-contracts
+```
