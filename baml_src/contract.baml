@@ -178,7 +178,7 @@ i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwe
   "contract_name": "UMOWA ZLECENIE"
 }
 
-In Polish, the change from "Markowskim" to "Markowski" involves understanding the case system, specifically changing from the instrumental case to the nominative case for surnames. Here are the rules:
+In Polish, the change of surname from "Markowskim" to "Markowski" involves changing from the instrumental case to the nominative case. Here are the rules:
 -skim → -ski (Kowalskim → Kowalski)
 -ckim → -cki (Nowiackim → Nowiacki)
 -dzkim → -dzki (Zawadzkim → Zawadzki)
@@ -198,7 +198,7 @@ Contract Text to Analyze:
   "#
 }
 
-test sample_contract {
+test contract_name_and_date {
   functions [ExtractContract]
   args {
     contract #"UMOWA ZLECENIE
@@ -223,19 +223,201 @@ i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwe
     "#
   }
   @@assert(contract_name, {{ this.contract_name == "UMOWA ZLECENIE" }})
+  @@assert(date, {{ this.date == "2025-04-20" }})
+  @@assert(parties, {{this.parties | length == 2}})
+}
+
+test contract_value {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(net_value, {{ this.net_value == "700" }})
   @@assert(currency, {{ this.currency == "PLN" }})
-  @@assert(date, {{ this.date == "2025-04-20" }})
-  @@assert(parties, {{ this.parties | length == 2 }})
+}
+
+test zleceniodawca {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(parties.zleceniodawca.name, {{ this.parties[0].name == "Komar SP. Z O.O., Dworcowa 4, Zgierz, NIP: 78500112233, REGON: 987654321, Prezes Zarządu: Mieczysław Okonia" }})
   @@assert(parties.zleceniodawca.role, {{ this.parties[0].role == "Zleceniodawca" }})
+}
+
+test zleceniobiorca {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(parties.zleceniobiorca.name, {{ this.parties[1].name == "Tomasz Karp, ul. Leśna 3, 01-234 Robakowo, nr PESEL: 98123100123" }})
   @@assert(parties.zleceniobiorca.role, {{ this.parties[1].role == "Zleceniobiorca" }})
+}
+
+test work {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(scope_of_work.services.work_stream.major_tasks, {{ this.scope_of_work.services.work_stream.major_tasks == ["malowanie szopy na narzędzia"] }})
-  @@assert(scope_of_work.services.work_stream.major_tasks, {{ this.scope_of_work.services.work_stream.roles == []}})
+  @@assert(scope_of_work.services.work_stream.major_tasks, {{ this.scope_of_work.services.roles == []}})
+}
+
+test milestones {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(scope_of_work.project_plan_and_milestones.start_date, {{ this.scope_of_work.project_plan_and_milestones.start_date == "2025-04-20" }})
   @@assert(scope_of_work.project_plan_and_milestones.end_date, {{ this.scope_of_work.project_plan_and_milestones.end_date == "2025-04-22" }})
+}
+
+test acceptance_criteria {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(scope_of_work.acceptance_criteria.deliverables, {{ this.scope_of_work.acceptance_criteria.deliverables == ["malowanie szopy na narzędzia"] }})
+}
+
+test duration_and_termination {
+  functions [ExtractContract]
+  args {
+    contract #"UMOWA ZLECENIE
+
+zawarta w dniu 2025-04-20 w Warszawie, pomiędzy:
+
+Komar SP. Z O.O. z siedzibą w Zgierzu., adres: Dworcowa 4, posiadającą NIP: 78500112233, REGON: 987654321, reprezentowaną przez: Mieczysława Okonia. - Prezesa Zarządu, zwaną dalej „Zleceniodawcą",
+a
+Panem Tomaszem Karpiem zamieszkałym przy ul. Leśnej 3, 01-234 Robakowo, posiadającym nr PESEL: 98123100123., zwaną dalej „Zleceniobiorcą"
+
+1. Zleceniodawca zleca, a Zleceniobiorca zobowiązuje się wykonać w sposób samodzielny następujące czynności: malowanie szopy na narzędzia.
+2. Umowa zawarta jest od dnia do dnia: 2025-04-20-2025-04-22
+3. Zleceniobiorcy za wykonanie czynności określonych w pkt 1 przysługuje wynagrodzenie brutto w wysokości 700 zł, płatne przelewem na rachunek bankowy wskazany przez Zleceniobiorcę.
+4. Zleceniobiorca nie może bez pisemnej zgody Zleceniodawcy powierzyć wykonania niniejszej umowy w części lub w całości innej osobie ani też przelewać na nią swoich praw wynikających z umowy.
+5. W przypadku, gdy należne wynagrodzenie z tytułu niniejszej umowy wymienione w pkt 3 podlega opodatkowaniu podatkiem dochodowym od osób fizycznych, podatek ten obciąża Zleceniobiorcę
+i zaliczka na podatek jest przekazywana za pośrednictwem Spółki do właściwego urzędu skarbowego z wyłączeniem przypadków określonych w art. 44 ustawy o podatku dochodowym od osób fizycznych (najem, dzierżawa, działalność gospodarcza), w którym Zleceniobiorca zobowiązany jest samodzielnie dokonać wpłaty zaliczek na podatek dochodowy na rzecz właściwego urzędu skarbowego.
+6. Zleceniobiorca zobowiązuje się, z zastrzeżeniem ust.7, do traktowania jako poufnych wszelkich informacji, które zostaną mu udostępnione lub przekazane przez Zleceniodawcę w związku z wykonaniem niniejszej umowy, nie udostępniania ich w jakikolwiek sposób osobom trzecim bez pisemnej zgody Zleceniodawcy i wykorzystania ich tylko do celów określonych w umowie.
+7. Obowiązek zachowania poufności, o którym mowa w powyższym punkcie nie dotyczy informacji które:
+1) w czasie ich ujawnienia były publicznie znane,
+2) których obowiązek ujawnienia wynika z orzeczenia sądu lub decyzji innego uprawnionego organu władz, z zastrzeżeniem niezwłocznego powiadomienia Zleceniodawcy o takim obowiązku.
+8. Wszelkie zmiany niniejszej umowy wymagają formy pisemnej.
+    "#
+  }
   @@assert(scope_of_work.duration_and_termination.start_date, {{ this.scope_of_work.duration_and_termination.start_date == "2025-04-20" }})
   @@assert(scope_of_work.duration_and_termination.end_condition, {{ this.scope_of_work.duration_and_termination.end_condition == "missing" }})
 }
