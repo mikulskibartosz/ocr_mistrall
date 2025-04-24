@@ -58,3 +58,10 @@ docker build -t ocr-contracts .
 ```bash
 docker run -d -e MISTRAL_API_KEY=<klucz-api-mistrala> -p 8080:8080 ocr-contracts
 ```
+
+## Zatrzymywanie Dockera
+
+```bash
+docker ps
+docker stop <id-kontenera>
+```
