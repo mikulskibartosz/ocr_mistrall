@@ -1,0 +1,91 @@
+{
+  "name": "Przykład",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -40
+      ],
+      "id": "cf350fba-7376-48ab-8ae3-5dd83175bd5d",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/data/*.pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        -40
+      ],
+      "id": "673f21fb-496c-4848-80db-a5a3472e2da4",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ocr-contracts:8080/ocr",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        -40
+      ],
+      "id": "0d0a8f23-a251-49eb-8979-91b7856822f1",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3dfb1bf5-a1b0-4f79-9dc3-6d49d8c57948",
+  "meta": {
+    "instanceId": "8be7bb374ee23a75f3ef4d2fe7ca7c65777ac7a261ca88f5ae27fe0acc66fc60"
+  },
+  "id": "oexmGJbJMRaMPal6",
+  "tags": []
+}

@@ -65,3 +65,15 @@ docker run -d -e MISTRAL_API_KEY=<klucz-api-mistrala> -p 8080:8080 ocr-contracts
 docker ps
 docker stop <id-kontenera>
 ```
+
+## Uruchomienie obu usług
+
+```bash
+MISTRAL_API_KEY=<klucz-api-mistrala> docker compose up -d
+```
+
+## Wyłączenie obu usług
+
+```bash
+docker compose down
+```
