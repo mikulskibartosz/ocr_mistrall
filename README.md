@@ -35,6 +35,12 @@ poetry install
 
 Tworzymy plik `.env` kopiując zawartość pliku `.env.example` i wklejając klucz API z Mistrala (nawet jeśli używamy Ollamy będzie potrzebny do OCR).
 
+## Generowanie BAML
+
+```bash
+poetry run baml-cli generate
+```
+
 ## Uruchomienie (lokalnie)
 
 ```bash
