@@ -66,13 +66,21 @@ docker ps
 docker stop <id-kontenera>
 ```
 
-## Uruchomienie obu usług
+## Docker Compose
+
+### Budowanie obrazu Dockera
+
+```bash
+docker compose build
+```
+
+### Uruchomienie obu usług
 
 ```bash
 MISTRAL_API_KEY=<klucz-api-mistrala> docker compose up -d
 ```
 
-## Wyłączenie obu usług
+### Wyłączenie obu usług
 
 ```bash
 docker compose down
